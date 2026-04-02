@@ -10,7 +10,7 @@ Transform a 1.47" SPI TFT display (ST7789V3, 172×320) into a **standalone Linux
 | :--- | :--- |
 | **SBC** | Raspberry Pi Zero 2W (Quad-core ARM A53, 512MB RAM) |
 | **Display** | GMT147SPI — 1.47" IPS TFT (172×320 pixels), ST7789V3 driver |
-| **Input** | USB HID Keyboard or 2.4GHz Wireless Mini-Keyboard |
+| **Input** | Any keyboard connected to OTG cable |
 | **Power** | 5V Micro-USB (Pi) / 3.3V Logic (Display) |
 
 ### Wiring
@@ -37,26 +37,20 @@ sudo raspi-config nonint do_spi 0
 sudo apt update && sudo apt upgrade -y
 ```
 
-#### Step 2: Install Core Dependencies
-We use `pyte` for VT100 emulation and `evdev` for raw keyboard handling.
-```bash
-sudo apt install -y python3-spidev python3-pil python3-evdev python3-pip python3-gpiod
-pip3 install pyte --break-system-packages
-```
-
-#### Step 3: Deploy the Terminal Engine
-Create the main script `spi_terminal.py` in your home directory. This script handles the PTY (Pseudo-Terminal), the font rendering, and the ST7789 SPI protocol.
+#### Step 2: Clone repository and install python requirements
 ```bash
 git clone https://github.com/molattam1/nano-term.git nano-term
+cd ~/nano-term
+pip install -r requirements.txt
 ```
 
-#### Step 4: Configure Display Offsets
+#### Step 3: Configure Display Offsets
 Because the ST7789 chip is 240px wide but the glass is only 172px, we apply a software offset in the `send_image` function:
 * **Landscape Width:** 320px
 * **Landscape Height:** 172px
 * **Memory Offset:** 34px (Calculated as `(240 - 172) / 2`)
 
-#### Step 5: Automate on Boot (Systemd)
+#### Step 4: Automate on Boot (Systemd)
 Create a service so the terminal starts immediately on power-up:
 ```bash
 sudo nano /etc/systemd/system/nano-term.service
