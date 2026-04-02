@@ -47,8 +47,7 @@ pip3 install pyte --break-system-packages
 #### Step 3: Deploy the Terminal Engine
 Create the main script `spi_terminal.py` in your home directory. This script handles the PTY (Pseudo-Terminal), the font rendering, and the ST7789 SPI protocol.
 ```bash
-nano ~/spi_terminal.py
-# (Paste the final optimized Python code here)
+git clone https://github.com/molattam1/nano-term.git nano-term
 ```
 
 #### Step 4: Configure Display Offsets
@@ -60,7 +59,7 @@ Because the ST7789 chip is 240px wide but the glass is only 172px, we apply a so
 #### Step 5: Automate on Boot (Systemd)
 Create a service so the terminal starts immediately on power-up:
 ```bash
-sudo nano /etc/systemd/system/spi-terminal.service
+sudo nano /etc/systemd/system/nano-term.service
 ```
 Paste the following:
 ```ini
@@ -72,7 +71,7 @@ After=multi-user.target
 Type=simple
 User=root
 WorkingDirectory=/home/finch
-ExecStart=/usr/bin/python3 /home/finch/spi_terminal.py
+ExecStart=/usr/bin/python3 /home/finch/nano-term/main.py
 Restart=always
 RestartSec=2
 
@@ -81,8 +80,8 @@ WantedBy=multi-user.target
 ```
 Enable the service:
 ```bash
-sudo systemctl enable spi-terminal.service
-sudo systemctl start spi-terminal.service
+sudo systemctl enable nano-term.service
+sudo systemctl start nano-term.service
 ```
 
 ---
